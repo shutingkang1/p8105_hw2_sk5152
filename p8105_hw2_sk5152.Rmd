@@ -22,28 +22,29 @@ NYC_Subway=janitor::clean_names(NYC_Subway)
 ```{r}
 
 MrTrashWheel=
-  readxl::read_excel("./data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet="Mr. Trash Wheel",range="A2:N534") %>%
+  readxl::read_excel("./data/Trash Wheel Collection Data.xlsx", sheet="Mr. Trash Wheel") %>%
   janitor::clean_names()%>%
   mutate(dumpster=as.numeric(dumpster))%>%
   filter(!is.na(dumpster))%>%
   mutate(sports_balls=round(sports_balls,0))%>%
-  mutate(sports_balls=as.integer(sports_balls))
+  mutate(sports_balls=as.integer(sports_balls))%>%
+  select(-x15,-x16)
 MrTrashWheel
 ```
 #### import, clean, and organize the data for Professor Trash Wheel
 ```{r}
 ProfTrashWheel=
-  readxl::read_excel("./data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", sheet="Professor Trash Wheel",range="A2:N117") %>%
+  readxl::read_excel("./data/Trash Wheel Collection Data.xlsx", sheet="Professor Trash Wheel")%>%
   janitor::clean_names()%>%
   mutate(dumpster=as.numeric(dumpster))%>%
-  filter(!is.na(dumpster))%>%
-  mutate(sports_balls=round(sports_balls,0))%>%
-  mutate(sports_balls=as.integer(sports_balls))
+  add_column(sports_balls = NA)%>%
+  filter(!is.na(dumpster))
 ProfTrashWheel
 ```
 #### combine Professor Trash Wheel with Mr. Trash Wheel
 ```{r}
 MTW=mutate(MrTrashWheel,resource='M')
+MTW
 PTW=mutate(ProfTrashWheel,resource='P')
 TW=rbind(MTW,PTW)
 TW
